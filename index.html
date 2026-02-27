@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ============================================================
+    PAGE TITLE
+    Update this to match your store name.
+  ============================================================ -->
+  <title>KenyaTech — Premium Phone Accessories</title>
+
+  <!-- ============================================================
+    FONTS (Google Fonts)
+    Three fonts are used:
+      - Cormorant Garamond : headings, prices, logo (elegant serif)
+      - DM Sans            : body text, buttons, labels (clean sans-serif)
+      - Space Mono         : small labels, tags, category badges (monospace)
+    To change fonts, replace the URL below and update style.css
+    where font-family is declared.
+  ============================================================ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+    CUSTOM CURSOR
+    Decorative gold cursor dots that follow the mouse.
+    Only visible on desktop — hidden automatically on mobile/touch.
+    To disable: remove these two divs and the CURSOR section in style.css
+    and the cursor logic in script.js.
+  ============================================================ -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+
+  <!-- ============================================================
+    TOAST NOTIFICATION
+    Small popup that appears bottom-right when items are added to cart.
+    Controlled by showToast() in script.js.
+  ============================================================ -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">🛒</span>
+    <span class="toast-text" id="toastText">Added to cart!</span>
+  </div>
+
+
+  <!-- ============================================================
+    NAVIGATION BAR
+    Fixed at the top. Shrinks slightly on scroll (via JS).
+    Logo: "Kenya" in white + "Tech" in gold.
+    Update the href links to match your section IDs below.
+  ============================================================ -->
+  <nav id="navbar">
+    <!-- Logo — update text to your brand name -->
+    <a href="#home" class="nav-logo">Kenya<span>Tech</span></a>
+
+    <!-- Desktop navigation links -->
+    <ul class="nav-links">
+      <li><a href="#products">Shop</a></li>
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="#bestsellers">Best Sellers</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <!-- Cart button — badge shows number of items -->
+      <button class="cart-btn" onclick="openCheckout()">
+        🛒 Cart <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <!-- Hamburger button — only visible on mobile -->
+      <button class="menu-btn" id="menuBtn">☰</button>
+    </div>
+  </nav>
+
+
+  <!-- ============================================================
+    MOBILE MENU
+    Full-screen overlay menu shown when hamburger is tapped.
+    Add or remove <a> links here to match your nav sections.
+  ============================================================ -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#products"    onclick="closeMobileMenu()">Shop All</a>
+    <a href="#categories"  onclick="closeMobileMenu()">Categories</a>
+    <a href="#bestsellers" onclick="closeMobileMenu()">Best Sellers</a>
+    <a href="#about"       onclick="closeMobileMenu()">About Us</a>
+  </div>
+
+
+  <!-- ============================================================
+    HERO SECTION
+    Full-screen landing area with headline, subtext, and CTAs.
+    To edit:
+      - Headline: change the text inside <h1> and <em>
+      - Subtext: change the <p class="hero-sub"> paragraph
+      - Stats (bottom-right): change the .stat-num and .stat-label values
+      - The tag text ("Nairobi's Premium Tech Store") is editable below
+  ============================================================ -->
+  <section class="hero" id="home">
+    <!-- Decorative background gradient (CSS-only, no images needed) -->
+    <div class="hero-bg"></div>
+    <!-- Decorative grid overlay -->
+    <div class="hero-grid"></div>
+
+    <div class="hero-content">
+      <!-- Small blinking tag above the headline -->
+      <div class="hero-tag">✦ Nairobi's Premium Tech Store</div>
+
+      <!-- Main headline — <em> renders in italic gold -->
+      <h1>
+        Accessories<br>
+        <em>Worth Having.</em>
+      </h1>
+
+      <!-- Subheadline / tagline -->
+      <p class="hero-sub">
+        Unique, original phone accessories and electronics.
+        Crafted for style, built for performance.
+        Delivered anywhere in Kenya.
+      </p>
+
+      <!-- Call-to-action buttons -->
+      <div class="hero-ctas">
+        <a href="#products" class="btn-primary">Shop Now →</a>
+        <a href="#categories" class="btn-outline">View Categories</a>
+      </div>
+    </div>
+
+    <!-- Stats — shown on desktop, hidden on mobile -->
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Products</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">47</div>
+        <div class="stat-label">Counties</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Rating</div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator at bottom-center -->
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+    TRUST BAR
+    Scrolling marquee strip showing trust signals.
+    To add/remove items: duplicate or delete a <span class="trust-item">
+    block in BOTH the first AND second half (needed for seamless loop).
+  ============================================================ -->
+  <div class="trust-bar">
+    <div class="trust-track" id="trustTrack">
+
+      <!-- ── First set of items ── -->
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+        M-Pesa Payments — Coming Soon
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+        Delivery Anywhere in Kenya
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/></svg>
+        Pay on Delivery Available
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        100% Genuine Products
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1M3 10l1-4h16l1 4M3 10v8a1 1 0 001 1h16a1 1 0 001-1v-8"/></svg>
+        Free Returns — 7 Days
+      </span>
+
+      <!-- ── Duplicate set — required for seamless marquee animation ── -->
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+        M-Pesa Payments — Coming Soon
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+        Delivery Anywhere in Kenya
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/></svg>
+        Pay on Delivery Available
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        100% Genuine Products
+      </span>
+      <span class="trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1M3 10l1-4h16l1 4M3 10v8a1 1 0 001 1h16a1 1 0 001-1v-8"/></svg>
+        Free Returns — 7 Days
+      </span>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+    CATEGORIES SECTION
+    Two category cards: Phone Accessories and Electronics.
+    onclick="filterProducts('accessories')" filters the shop grid.
+    To update the product count shown, edit the .cat-count text.
+  ============================================================ -->
+  <section class="categories" id="categories">
+    <div class="section-label reveal">— Our Collections</div>
+    <h2 class="section-title reveal">Two Categories.<br><em>Endless Options.</em></h2>
+
+    <div class="cat-grid">
+
+      <!-- Category 1: Phone Accessories -->
+      <a class="cat-card reveal" href="#products" onclick="filterProducts('accessories')">
+        <span class="cat-icon">📱</span>
+        <div class="cat-name">Phone Accessories</div>
+        <p class="cat-desc">
+          Cases, earbuds, chargers, power banks, cables, screen protectors,
+          and unique accessories designed to elevate your phone experience.
+        </p>
+        <!-- Update this number when you add/remove accessories products -->
+        <div class="cat-count">// 12 Products Available</div>
+        <div class="cat-arrow">→</div>
+      </a>
+
+      <!-- Category 2: Electronics -->
+      <a class="cat-card reveal" href="#products" onclick="filterProducts('electronics')">
+        <span class="cat-icon">⚡</span>
+        <div class="cat-name">Electronics</div>
+        <p class="cat-desc">
+          Bluetooth speakers, smart gadgets, wireless chargers, power solutions,
+          and premium consumer electronics for everyday life.
+        </p>
+        <!-- Update this number when you add/remove electronics products -->
+        <div class="cat-count">// 8 Products Available</div>
+        <div class="cat-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+    PRODUCTS SECTION
+    Products are rendered dynamically by JavaScript (see script.js).
+    The filter tabs (All / Phone Accessories / Electronics) control
+    which products are shown.
+    To add products: edit the `products` array in script.js.
+  ============================================================ -->
+  <section class="products-section" id="products">
+    <div class="products-header">
+      <div>
+        <div class="section-label reveal">— Featured Products</div>
+        <h2 class="section-title reveal">Shop <em>Collection</em></h2>
+      </div>
+
+      <!-- Filter tabs — clicking calls filterProducts() in script.js -->
+      <div class="filter-tabs reveal">
+        <button class="filter-tab active" onclick="filterProducts('all', this)">All</button>
+        <button class="filter-tab" onclick="filterProducts('accessories', this)">Phone Accessories</button>
+        <button class="filter-tab" onclick="filterProducts('electronics', this)">Electronics</button>
+      </div>
+    </div>
+
+    <!-- Product cards are injected here by renderProducts() in script.js -->
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+
+
+  <!-- ============================================================
+    BEST SELLERS SECTION
+    The featured product and ranked list are rendered by
+    renderBestsellers() in script.js.
+    To change which products are featured, edit the `top` array
+    inside renderBestsellers() in script.js.
+  ============================================================ -->
+  <section class="bestsellers" id="bestsellers">
+    <div class="section-label reveal">— Top Picks</div>
+    <h2 class="section-title reveal">Best <em>Sellers</em></h2>
+
+    <div class="bs-grid">
+      <!-- Large feature card — rendered by JS -->
+      <div class="bs-feature reveal" id="bsFeature"></div>
+      <!-- Ranked list of top sellers — rendered by JS -->
+      <div class="bs-list reveal" id="bsList"></div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+    WHY US / ABOUT SECTION
+    Four trust/value proposition cards.
+    To edit: simply change the emoji, title, and description text
+    inside each .why-card div below.
+  ============================================================ -->
+  <section class="why-section" id="about">
+    <div class="section-label reveal">— Why KenyaTech</div>
+    <h2 class="section-title reveal">Built for <em>Kenya</em></h2>
+
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <span class="why-icon">🇰🇪</span>
+        <div class="why-title">Made for Kenyans</div>
+        <p class="why-desc">Products curated specifically for the Kenyan market, lifestyle, and budget. We know what works here.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="why-icon">📲</span>
+        <div class="why-title">M-Pesa First</div>
+        <p class="why-desc">Pay instantly via M-Pesa STK Push — no cards, no fuss. The way Kenya shops.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="why-icon">🚚</span>
+        <div class="why-title">Nationwide Delivery</div>
+        <p class="why-desc">We deliver to all 47 counties. Nairobi same-day, nationwide within 3 days.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="why-icon">✅</span>
+        <div class="why-title">100% Genuine</div>
+        <p class="why-desc">Every product is original, quality-checked, and backed by a 7-day return guarantee.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+    CUSTOMER SUPPORT BAR
+    Quick-access support strip above the footer.
+    Update the phone number and WhatsApp link here.
+  ============================================================ -->
+  <div class="support-bar">
+    <div class="support-inner">
+      <div class="support-left">
+        <span class="support-icon">🎧</span>
+        <div>
+          <div class="support-title">Need Help? Talk to Us</div>
+          <div class="support-sub">Mon–Sat · 8am–8pm · Fast response guaranteed</div>
+        </div>
+      </div>
+      <div class="support-actions">
+        <a href="tel:+254722282906" class="support-btn support-btn-call">
+          📞 Call +254 722 282 906
+        </a>
+        <a href="https://wa.me/254722282906" target="_blank" class="support-btn support-btn-whatsapp">
+          💬 WhatsApp Us
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+    FOOTER
+    Update contact details, address, and links to match your business.
+  ============================================================ -->
+  <footer>
+    <div class="footer-grid">
+
+      <!-- Brand column -->
+      <div class="footer-brand">
+        <a href="#home" class="nav-logo">Kenya<span>Tech</span></a>
+        <p class="footer-brand-desc">
+          Nairobi's premier destination for original, unique phone accessories
+          and electronics. Delivering quality to all 47 counties.
+        </p>
+      </div>
+
+      <!-- Shop links -->
+      <div>
+        <div class="footer-col-title">Shop</div>
+        <ul class="footer-links">
+          <li><a href="#products">All Products</a></li>
+          <li><a href="#categories" onclick="filterProducts('accessories')">Phone Accessories</a></li>
+          <li><a href="#categories" onclick="filterProducts('electronics')">Electronics</a></li>
+          <li><a href="#bestsellers">Best Sellers</a></li>
+        </ul>
+      </div>
+
+      <!-- Support links -->
+      <div>
+        <div class="footer-col-title">Support</div>
+        <ul class="footer-links">
+          <li><a href="#">Delivery Info</a></li>
+          <li><a href="#">Returns Policy</a></li>
+          <li><a href="#">Track Your Order</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact info — UPDATE THESE with real details -->
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <ul class="footer-links">
+          <li><a href="tel:+254722282906">+254 722 282 906</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#3c54595050537c575952455d48595f54125f53125759"><span class="__cf_email__" data-cfemail="bcd4d9d0d0d3fcd7d9d2c5ddc8d9dfd492dfd392d7d9">[email&#160;protected]</span></a></li>
+          <li><a href="https://wa.me/254722282906" target="_blank">WhatsApp Us</a></li>
+          <li><a href="#">Westlands, Nairobi</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 KenyaTech.co.ke — All rights reserved</div>
+      <div class="mpesa-badge" style="opacity:0.6;">📲 M-Pesa Payments — Coming Soon</div>
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+    PRODUCT MODAL
+    Pop-up dialog showing full product details.
+    Content is injected dynamically by openProduct() in script.js.
+    Closes when clicking the ✕ button or clicking outside the modal.
+  ============================================================ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-grid">
+        <!-- Product emoji/image area — populated by JS -->
+        <div class="modal-img" id="modalImg"></div>
+        <div class="modal-body">
+          <div class="modal-cat"   id="modalCat"></div>
+          <div class="modal-name"  id="modalName"></div>
+          <p   class="modal-desc"  id="modalDesc"></p>
+          <div class="modal-price" id="modalPrice"></div>
+          <div class="modal-delivery">
+            ✓ Free delivery on orders above KES 2,000 · Ships in 1–3 days
+          </div>
+          <!-- Payment method trust badges -->
+          <div class="modal-payment">
+            <div class="pay-badge" style="opacity:0.5;">📲 M-Pesa <span style="font-size:0.65rem; color:var(--gold);">Coming Soon</span></div>
+            <div class="pay-badge">💰 Pay on Delivery</div>
+            <div class="pay-badge">🔒 Secure</div>
+          </div>
+          <!-- Action buttons — onclick handlers set by JS -->
+          <div class="modal-ctas">
+            <button class="btn-buy-now" id="modalBuyBtn">Buy Now — Pay with M-Pesa</button>
+            <button class="btn-cod"     id="modalCodBtn">🚚 Pay on Delivery</button>
+          </div>
+
+          <!-- Social share row — share this product to Facebook, TikTok, WhatsApp -->
+          <div style="margin-top:1.2rem; padding-top:1rem; border-top:1px solid var(--border);">
+            <div style="font-family:'Space Mono',monospace; font-size:0.62rem; color:var(--gold); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.75rem;">// Share This Product</div>
+            <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+              <button onclick="shareProduct(currentModalProductId, 'facebook')" class="share-btn" title="Share on Facebook">
+                📘 Facebook Ad
+              </button>
+              <button onclick="shareProduct(currentModalProductId, 'tiktok')" class="share-btn" title="Copy link for TikTok">
+                🎵 TikTok Link
+              </button>
+              <button onclick="shareProduct(currentModalProductId, 'whatsapp')" class="share-btn" title="Share on WhatsApp">
+                💬 WhatsApp
+              </button>
+              <button onclick="shareProduct(currentModalProductId, 'copy')" class="share-btn" title="Copy product link">
+                🔗 Copy Link
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+    CHECKOUT SLIDE-OUT PANEL
+    Slides in from the right. Contains:
+      1. Cart items list
+      2. Customer details form (name, phone, location)
+      3. Payment method selection (M-Pesa / COD)
+      4. Order summary & place order button
+      5. Success confirmation screen
+    All content inside .checkout-content is rendered by renderCheckout() in script.js.
+  ============================================================ -->
+  <div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-panel" id="checkoutPanel">
+
+      <!-- Panel header -->
+      <div class="checkout-header">
+        <div class="checkout-title">Your Cart</div>
+        <button class="close-btn" onclick="closeCheckout()">✕</button>
+      </div>
+
+      <!-- Dynamic content area (cart items + form + summary) -->
+      <div class="checkout-content" id="checkoutContent"></div>
+
+      <!-- Success screen — hidden by default, shown after order is placed -->
+      <div class="order-success" id="orderSuccess">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">Order Placed!</div>
+        <p class="success-msg" id="successMsg">
+          Thank you! We'll contact you shortly to confirm your order and arrange delivery.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+    JAVASCRIPT
+    Load the script at the bottom so the DOM is ready before the script runs.
+  ============================================================ -->
+  <script src="script.js"></script>
+
+</body>
+</html>

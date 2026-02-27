@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KenyaTech — Premium Phone Accessories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A853;
+    --gold-light: #F0C872;
+    --gold-dim: #8A6A2A;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --dark2: #181818;
+    --dark3: #222222;
+    --card: #161616;
+    --border: #2A2A2A;
+    --border-gold: rgba(212,168,83,0.25);
+    --text: #E8E0D0;
+    --text-dim: #8A8078;
+    --text-muted: #555;
+    --green: #22C55E;
+    --red: #EF4444;
+    --white: #FFFFFF;
+    --r: 8px;
+    --r-lg: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 99999;
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 99998;
+    transition: transform 0.3s ease;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+  }
+  .cursor.hovering { width: 20px; height: 20px; background: var(--gold-light); }
+  .cursor-ring.hovering { width: 52px; height: 52px; opacity: 0.3; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%;
+    height: 72px;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  nav.scrolled { height: 60px; border-bottom-color: var(--border-gold); }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--gold);
+    transform: scaleX(0); transition: transform 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+  .cart-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 0.55rem 1.2rem;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: none;
+    transition: background 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .cart-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .cart-count {
+    background: var(--black);
+    color: var(--gold);
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700;
+  }
+
+  .menu-btn {
+    display: none;
+    background: none; border: 1px solid var(--border);
+    color: var(--text); width: 40px; height: 40px;
+    border-radius: var(--r); align-items: center; justify-content: center;
+    cursor: none; font-size: 1.2rem;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 5% 8%;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(212,168,83,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 20% 80%, rgba(212,168,83,0.04) 0%, transparent 50%),
+      linear-gradient(160deg, #0F0F0F 0%, #0A0A0A 100%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(212,168,83,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,168,83,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.6;
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 720px; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    border: 1px solid var(--border-gold);
+    padding: 0.4rem 1rem;
+    border-radius: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.2rem, 7vw, 6.5rem);
+    font-weight: 300;
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.8s ease 0.6s both;
+  }
+
+  .hero-ctas {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    animation: fadeUp 0.8s ease 0.8s both;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: var(--gold);
+    color: var(--black);
+    padding: 0.9rem 2.2rem;
+    border: none; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(212,168,83,0.3);
+  }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: transparent;
+    color: var(--text);
+    padding: 0.9rem 2.2rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500;
+    cursor: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+  .hero-stats {
+    position: absolute; right: 5%; bottom: 8%;
+    display: flex; flex-direction: column; gap: 2rem;
+    z-index: 2;
+    animation: fadeLeft 0.8s ease 1s both;
+  }
+  .stat-item { text-align: right; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  .hero-scroll {
+    position: absolute; bottom: 3rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: var(--text-dim);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 2;
+    animation: fadeIn 1s ease 1.5s both;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(var(--gold), transparent);
+    animation: scrollDrop 2s ease-in-out infinite;
+  }
+  @keyframes scrollDrop {
+    0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+    50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  }
+
+  /* TRUST BAR */
+  .trust-bar {
+    background: var(--dark2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 5%;
+    overflow: hidden;
+  }
+  .trust-track {
+    display: flex; gap: 4rem; align-items: center;
+    animation: marquee 30s linear infinite;
+    white-space: nowrap;
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 0.7rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+  .trust-item svg { color: var(--gold); flex-shrink: 0; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* SECTIONS */
+  section { padding: 7rem 5%; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.1;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* CATEGORIES */
+  .categories { background: var(--black); }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .cat-card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 3rem 2.5rem;
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.3s, transform 0.3s;
+    text-decoration: none;
+    display: block;
+  }
+  .cat-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 80% 20%, rgba(212,168,83,0.08), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .cat-card:hover { border-color: var(--gold-dim); transform: translateY(-4px); }
+  .cat-card:hover::before { opacity: 1; }
+
+  .cat-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .cat-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.9rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .cat-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .cat-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+  .cat-arrow {
+    position: absolute; right: 2rem; bottom: 2rem;
+    width: 44px; height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dim);
+    transition: border-color 0.3s, color 0.3s, transform 0.3s;
+  }
+  .cat-card:hover .cat-arrow { border-color: var(--gold); color: var(--gold); transform: rotate(45deg); }
+
+  /* FEATURED PRODUCTS */
+  .products-section { background: var(--dark2); }
+
+  .products-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 3.5rem;
+    flex-wrap: wrap; gap: 1.5rem;
+  }
+
+  .filter-tabs {
+    display: flex; gap: 0.5rem;
+    background: var(--dark3);
+    padding: 0.3rem;
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+  }
+  .filter-tab {
+    padding: 0.55rem 1.2rem;
+    border: none; border-radius: 6px;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .filter-tab.active {
+    background: var(--gold);
+    color: var(--black);
+    font-weight: 600;
+  }
+  .filter-tab:hover:not(.active) { color: var(--text); }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .product-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .product-card:hover {
+    border-color: var(--border-gold);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .product-img {
+    aspect-ratio: 1;
+    background: var(--dark3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(212,168,83,0.06), transparent);
+  }
+
+  .product-badge {
+    position: absolute; top: 1rem; left: 1rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    z-index: 2;
+  }
+  .badge-new { background: var(--gold); color: var(--black); }
+  .badge-hot { background: #EF4444; color: white; }
+  .badge-sale { background: var(--green); color: white; }
+
+  .product-wishlist {
+    position: absolute; top: 1rem; right: 1rem;
+    width: 36px; height: 36px;
+    background: rgba(10,10,10,0.7);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    z-index: 2;
+    color: var(--text-dim);
+  }
+  .product-wishlist:hover, .product-wishlist.active { color: #EF4444; border-color: #EF4444; }
+
+  .product-info { padding: 1.5rem; }
+
+  .product-category {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+  .product-desc {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 1.2rem;
+  }
+
+  .product-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .product-price { display: flex; flex-direction: column; }
+  .price-main {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .price-original {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+
+  .add-to-cart {
+    width: 44px; height: 44px;
+    background: var(--gold);
+    border: none;
+    border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    cursor: none;
+    transition: background 0.2s, transform 0.15s;
+    font-size: 1.1rem;
+  }
+  .add-to-cart:hover { background: var(--gold-light); transform: scale(1.08); }
+
+  /* PRODUCT MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    max-width: 900px; width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px);
+    transition: transform 0.3s;
+    position: relative;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    width: 40px; height: 40px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: none; color: var(--text-dim);
+    font-size: 1.2rem;
+    transition: all 0.2s;
+    z-index: 10;
+  }
+  .modal-close:hover { color: var(--white); border-color: var(--gold); }
+
+  .modal-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .modal-img {
+    aspect-ratio: 1;
+    background: var(--dark3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8rem;
+    border-radius: var(--r-lg) 0 0 var(--r-lg);
+  }
+  .modal-body { padding: 3rem; }
+  .modal-cat {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .modal-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+  .modal-desc {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .modal-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-delivery {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--green);
+    margin-bottom: 2rem;
+  }
+
+  .modal-payment {
+    display: flex; gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .pay-badge {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .modal-ctas { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .btn-buy-now {
+    width: 100%;
+    padding: 1rem;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    border-radius: var(--r);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    cursor: none;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .btn-buy-now:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  .btn-cod {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 500;
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .btn-cod:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* CHECKOUT PANEL */
+  .checkout-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 3000;
+    display: flex; justify-content: flex-end;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .checkout-overlay.open { opacity: 1; pointer-events: all; }
+
+  .checkout-panel {
+    background: var(--dark2);
+    width: 100%; max-width: 480px;
+    height: 100%;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .checkout-overlay.open .checkout-panel { transform: translateX(0); }
+
+  .checkout-header {
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .checkout-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--white);
+  }
+  .close-btn {
+    background: none; border: none;
+    color: var(--text-dim); font-size: 1.3rem; cursor: none;
+    transition: color 0.2s;
+  }
+  .close-btn:hover { color: var(--white); }
+
+  .checkout-content { padding: 2rem; flex: 1; }
+
+  /* CART ITEMS */
+  .cart-section { margin-bottom: 2rem; }
+  .cart-section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .cart-item {
+    display: flex; gap: 1rem; align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cart-item-emoji { font-size: 2rem; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 0.88rem; color: var(--text); font-weight: 500; }
+  .cart-item-price { font-size: 0.85rem; color: var(--gold); margin-top: 0.2rem; }
+  .cart-item-remove { color: var(--text-muted); cursor: none; font-size: 0.9rem; transition: color 0.2s; }
+  .cart-item-remove:hover { color: var(--red); }
+
+  .cart-empty {
+    text-align: center; padding: 3rem 0;
+    color: var(--text-dim); font-size: 0.9rem;
+  }
+
+  /* FORM */
+  .form-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 1.5rem 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .form-divider::before, .form-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 0.9rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-input:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: var(--text-muted); }
+
+  .payment-options { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+
+  .pay-option {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1rem 1.2rem;
+    cursor: none;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .pay-option:hover { border-color: var(--gold-dim); }
+  .pay-option.selected { border-color: var(--gold); background: rgba(212,168,83,0.06); }
+
+  .pay-radio {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+  }
+  .pay-option.selected .pay-radio { border-color: var(--gold); }
+  .pay-radio-dot {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0; transform: scale(0);
+    transition: all 0.2s;
+  }
+  .pay-option.selected .pay-radio-dot { opacity: 1; transform: scale(1); }
+
+  .pay-info { flex: 1; }
+  .pay-name { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+  .pay-desc { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.15rem; }
+
+  .order-summary {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+  .summary-row.total {
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem; padding-top: 0.75rem;
+    font-weight: 600; color: var(--white);
+  }
+  .summary-total-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+  }
+
+  .btn-place-order {
+    width: 100%;
+    padding: 1.1rem;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    border-radius: var(--r);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: none;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .btn-place-order:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,168,83,0.25); }
+
+  /* SUCCESS */
+  .order-success {
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; padding: 3rem; text-align: center;
+    flex: 1;
+  }
+  .order-success.show { display: flex; }
+  .success-icon { font-size: 4rem; margin-bottom: 1.5rem; }
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; color: var(--white); margin-bottom: 0.75rem;
+  }
+  .success-msg { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; max-width: 300px; }
+
+  /* BEST SELLERS */
+  .bestsellers { background: var(--black); }
+
+  .bs-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .bs-feature {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 3rem;
+    position: relative; overflow: hidden;
+  }
+  .bs-feature::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,168,83,0.08), transparent);
+  }
+  .bs-feature-emoji { font-size: 5rem; margin-bottom: 1.5rem; display: block; }
+  .bs-feature-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; color: var(--gold);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .bs-feature-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 500;
+    color: var(--white); margin-bottom: 0.75rem;
+  }
+  .bs-feature-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 2rem; }
+  .bs-feature-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; color: var(--gold); margin-bottom: 1.5rem;
+  }
+
+  .bs-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .bs-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; gap: 1.2rem;
+    cursor: none;
+    transition: border-color 0.3s;
+  }
+  .bs-item:hover { border-color: var(--border-gold); }
+  .bs-item-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: var(--gold-dim); width: 24px; flex-shrink: 0;
+  }
+  .bs-item-emoji { font-size: 2rem; flex-shrink: 0; }
+  .bs-item-info { flex: 1; }
+  .bs-item-name { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+  .bs-item-price { font-size: 0.85rem; color: var(--gold); margin-top: 0.2rem; }
+  .bs-item-btn {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem; cursor: none;
+    transition: all 0.2s;
+  }
+  .bs-item-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* WHY US */
+  .why-section { background: var(--dark2); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .why-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .why-card:hover { border-color: var(--border-gold); transform: translateY(-4px); }
+  .why-icon { font-size: 2.5rem; margin-bottom: 1.2rem; display: block; }
+  .why-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--white); margin-bottom: 0.5rem; }
+  .why-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    padding: 4rem 5% 2rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand .nav-logo { display: block; margin-bottom: 1rem; text-decoration: none; }
+  .footer-brand-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; max-width: 260px; }
+
+  .footer-col-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; color: var(--gold);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer-links a {
+    font-size: 0.82rem; color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-copy { font-size: 0.78rem; color: var(--text-muted); }
+
+  .mpesa-badge {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; color: var(--green);
+    border: 1px solid rgba(34,197,94,0.25);
+    padding: 0.35rem 0.8rem;
+    border-radius: 4px;
+  }
+
+  /* MOBILE NAV */
+  .mobile-menu {
+    display: none;
+    position: fixed; inset: 0;
+    background: var(--dark);
+    z-index: 900;
+    flex-direction: column;
+    padding: 100px 5% 3rem;
+    gap: 1.5rem;
+    border-right: none;
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+  .mobile-menu.open { transform: translateX(0); }
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem; color: var(--white);
+    text-decoration: none;
+    font-weight: 300;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeLeft { from { opacity:0; transform:translateX(24px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--dark2);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--r);
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    z-index: 9999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    max-width: 300px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { font-size: 1.2rem; }
+  .toast-text { font-size: 0.85rem; color: var(--text); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .bs-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+    nav { padding: 0 4%; }
+    .nav-links { display: none; }
+    .menu-btn { display: flex; }
+    .mobile-menu { display: flex; }
+    .hero { padding: 0 4% 6%; min-height: 100svh; }
+    .hero-stats { display: none; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    .why-grid { grid-template-columns: 1fr 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    section { padding: 5rem 4%; }
+    .products-header { flex-direction: column; align-items: flex-start; }
+    .modal-grid { grid-template-columns: 1fr; }
+    .modal-img { border-radius: var(--r-lg) var(--r-lg) 0 0; height: 280px; font-size: 6rem; }
+    .modal-body { padding: 2rem; }
+  }
+
+  @media (max-width: 480px) {
+    .products-grid { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+    .hero-ctas { flex-direction: column; }
+    .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSORS -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">🛒</span>
+  <span class="toast-text" id="toastText">Added to cart!</span>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Kenya<span>Tech</span></a>
+  <ul class="nav-links">
+    <li><a href="#products">Shop</a></li>
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#bestsellers">Best Sellers</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="cart-btn" onclick="openCheckout()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="menu-btn" id="menuBtn">☰</button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#products" onclick="closeMobileMenu()">Shop All</a>
+  <a href="#categories" onclick="closeMobileMenu()">Categories</a>
+  <a href="#bestsellers" onclick="closeMobileMenu()">Best Sellers</a>
+  <a href="#about" onclick="closeMobileMenu()">About Us</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">✦ Nairobi's Premium Tech Store</div>
+    <h1>
+      Accessories<br>
+      <em>Worth Having.</em>
+    </h1>
+    <p class="hero-sub">Unique, original phone accessories and electronics. Crafted for style, built for performance. Delivered anywhere in Kenya.</p>
+    <div class="hero-ctas">
+      <a href="#products" class="btn-primary">Shop Now →</a>
+      <a href="#categories" class="btn-outline">View Categories</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Products</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">47</div>
+      <div class="stat-label">Counties</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Rating</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-track" id="trustTrack">
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg> M-Pesa Secure Payments</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg> Delivery Anywhere in Kenya</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/></svg> Pay on Delivery Available</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 100% Genuine Products</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1M3 10l1-4h16l1 4M3 10v8a1 1 0 001 1h16a1 1 0 001-1v-8"/></svg> Free Returns — 7 Days</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg> M-Pesa Secure Payments</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg> Delivery Anywhere in Kenya</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/></svg> Pay on Delivery Available</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 100% Genuine Products</span>
+    <span class="trust-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1M3 10l1-4h16l1 4M3 10v8a1 1 0 001 1h16a1 1 0 001-1v-8"/></svg> Free Returns — 7 Days</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories" id="categories">
+  <div class="section-label reveal">— Our Collections</div>
+  <h2 class="section-title reveal">Two Categories.<br><em>Endless Options.</em></h2>
+  <div class="cat-grid">
+    <a class="cat-card reveal" href="#products" onclick="filterProducts('accessories')">
+      <span class="cat-icon">📱</span>
+      <div class="cat-name">Phone Accessories</div>
+      <p class="cat-desc">Cases, earbuds, chargers, power banks, cables, screen protectors, and unique accessories designed to elevate your phone experience.</p>
+      <div class="cat-count">// 12 Products Available</div>
+      <div class="cat-arrow">→</div>
+    </a>
+    <a class="cat-card reveal" href="#products" onclick="filterProducts('electronics')">
+      <span class="cat-icon">⚡</span>
+      <div class="cat-name">Electronics</div>
+      <p class="cat-desc">Bluetooth speakers, smart gadgets, wireless chargers, power solutions, and premium consumer electronics for everyday life.</p>
+      <div class="cat-count">// 8 Products Available</div>
+      <div class="cat-arrow">→</div>
+    </a>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="products-header">
+    <div>
+      <div class="section-label reveal">— Featured Products</div>
+      <h2 class="section-title reveal">Shop <em>Collection</em></h2>
+    </div>
+    <div class="filter-tabs reveal">
+      <button class="filter-tab active" onclick="filterProducts('all', this)">All</button>
+      <button class="filter-tab" onclick="filterProducts('accessories', this)">Phone Accessories</button>
+      <button class="filter-tab" onclick="filterProducts('electronics', this)">Electronics</button>
+    </div>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <!-- Rendered by JS -->
+  </div>
+</section>
+
+<!-- BEST SELLERS -->
+<section class="bestsellers" id="bestsellers">
+  <div class="section-label reveal">— Top Picks</div>
+  <h2 class="section-title reveal">Best <em>Sellers</em></h2>
+  <div class="bs-grid">
+    <div class="bs-feature reveal" id="bsFeature">
+      <!-- rendered by JS -->
+    </div>
+    <div class="bs-list reveal" id="bsList">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-section" id="about">
+  <div class="section-label reveal">— Why KenyaTech</div>
+  <h2 class="section-title reveal">Built for <em>Kenya</em></h2>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <span class="why-icon">🇰🇪</span>
+      <div class="why-title">Made for Kenyans</div>
+      <p class="why-desc">Products curated specifically for the Kenyan market, lifestyle, and budget. We know what works here.</p>
+    </div>
+    <div class="why-card reveal">
+      <span class="why-icon">📲</span>
+      <div class="why-title">M-Pesa First</div>
+      <p class="why-desc">Pay instantly via M-Pesa STK Push — no cards, no fuss. The way Kenya shops.</p>
+    </div>
+    <div class="why-card reveal">
+      <span class="why-icon">🚚</span>
+      <div class="why-title">Nationwide Delivery</div>
+      <p class="why-desc">We deliver to all 47 counties. Nairobi same-day, nationwide within 3 days.</p>
+    </div>
+    <div class="why-card reveal">
+      <span class="why-icon">✅</span>
+      <div class="why-title">100% Genuine</div>
+      <p class="why-desc">Every product is original, quality-checked, and backed by a 7-day return guarantee.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">Kenya<span>Tech</span></a>
+      <p class="footer-brand-desc">Nairobi's premier destination for original, unique phone accessories and electronics. Delivering quality to all 47 counties.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a href="#products">All Products</a></li>
+        <li><a href="#" onclick="filterProducts('accessories')">Phone Accessories</a></li>
+        <li><a href="#" onclick="filterProducts('electronics')">Electronics</a></li>
+        <li><a href="#bestsellers">Best Sellers</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Delivery Info</a></li>
+        <li><a href="#">Returns Policy</a></li>
+        <li><a href="#">Track Your Order</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="tel:+254700000000">+254 700 000 000</a></li>
+        <li><a href="mailto:hello@kenyatech.co.ke">hello@kenyatech.co.ke</a></li>
+        <li><a href="#">WhatsApp Us</a></li>
+        <li><a href="#">Westlands, Nairobi</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 KenyaTech.co.ke — All rights reserved</div>
+    <div class="mpesa-badge">🟢 M-Pesa Secured Payments</div>
+  </div>
+</footer>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-grid">
+      <div class="modal-img" id="modalImg"></div>
+      <div class="modal-body">
+        <div class="modal-cat" id="modalCat"></div>
+        <div class="modal-name" id="modalName"></div>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-delivery">✓ Free delivery on orders above KES 10,000 · Ships in 1–3 days</div>
+        <div class="modal-payment">
+          <div class="pay-badge">📲 M-Pesa</div>
+          <div class="pay-badge">💰 Pay on Delivery</div>
+          <div class="pay-badge">🔒 Secure</div>
+        </div>
+        <div class="modal-ctas">
+          <button class="btn-buy-now" id="modalBuyBtn">Buy Now — Pay with M-Pesa</button>
+          <button class="btn-cod" id="modalCodBtn">🚚 Pay on Delivery</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT PANEL -->
+<div class="checkout-overlay" id="checkoutOverlay">
+  <div class="checkout-panel" id="checkoutPanel">
+    <div class="checkout-header">
+      <div class="checkout-title">Your Cart</div>
+      <button class="close-btn" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="checkout-content" id="checkoutContent">
+      <!-- rendered by JS -->
+    </div>
+    <div class="order-success" id="orderSuccess">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Order Placed!</div>
+      <p class="success-msg" id="successMsg">Thank you! We'll contact you shortly to confirm your order and arrange delivery.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────
+const products = [
+  { id:1, name:"MagSafe Wallet Case", category:"accessories", emoji:"📱", price:2800, original:3500, badge:"new", desc:"Ultra-slim genuine leather wallet case with MagSafe compatibility. Holds 3 cards, premium feel.", rating:4.9 },
+  { id:2, name:"Pro Wireless Earbuds", category:"accessories", emoji:"🎧", price:4500, original:5800, badge:"hot", desc:"Active noise cancellation, 40-hour battery, IPX5 waterproof. The last earbuds you'll ever need.", rating:4.8 },
+  { id:3, name:"65W GaN Fast Charger", category:"accessories", emoji:"⚡", price:2200, original:null, badge:"new", desc:"Gallium Nitride technology — charges your phone from 0–80% in 35 minutes. Supports PD 3.0.", rating:4.9 },
+  { id:4, name:"20,000mAh Power Bank", category:"accessories", sendem1, price:3800, original:4500, badge:"sale", desc:"Ultra-fast 65W charging, LED display, dual USB-C + USB-A. Slim enough for your bag.", rating:4.7 },
+  { id:5, name:"Braided USB-C Cable (2m)", category:"accessories", emoji:"🔌", price:850, original:null, badge:null, desc:"Military-grade braided nylon, 100W power delivery, 10Gbps data transfer. Built to last.", rating:4.8 },
+  { id:6, name:"Tempered Glass Screen Guard", category:"accessories", emoji:"🛡️", price:650, original:null, badge:null, desc:"9H hardness, 0.3mm ultra-thin, oleophobic coating. Perfect clarity, zero bubbles.", rating:4.6 },
+  { id:7, name:"RGB Wireless Charger Pad", category:"accessories", emoji:"🌀", price:1800, original:2200, badge:"new", desc:"15W wireless charging with ambient RGB lighting. Compatible with all Qi-enabled phones.", rating:4.7 },
+  { id:8, name:"PopSocket MagSafe Ring", category:"accessories", emoji:"💫", price:950, original:null, badge:null, desc:"Magnetic phone grip & stand. Works with MagSafe. Rotating 360° design in 12 colors.", rating:4.5 },
+  { id:9, name:"Bluetooth Speaker Mini", category:"electronics", emoji:"🔊", price:3200, original:4000, badge:"hot", desc:"360° immersive sound, IPX7 waterproof, 24-hour battery. Perfect for outdoor Kenya.", rating:4.8 },
+  { id:10, name:"Smart LED Desk Lamp", category:"electronics", emoji:"💡", price:2800, original:null, badge:"new", desc:"Touch dimming, 3 color modes, USB charging port built-in. Foldable, portable design.", rating:4.6 },
+  { id:11, name:"Wireless Phone Stand", category:"electronics", emoji:"📡", price:2100, original:2600, badge:"sale", desc:"15W fast wireless charging stand with adjustable angle. Works while you watch videos.", rating:4.7 },
+  { id:12, name:"Smart Tracking Tag", category:"electronics", emoji:"🏷️", price:1500, original:null, badge:null, desc:"Never lose your keys, wallet, or bag. Works with iOS & Android. 1-year battery life.", rating:4.5 },
+  { id:13, name:"Phone Cooling Fan", category:"accessories", emoji:"❄️", price:1200, original:null, badge:"new", desc:"USB-C clip-on cooler. Reduces phone temperature by 20°C. Perfect for gaming sessions.", rating:4.4 },
+  { id:14, name:"Retractable Cable Reel", category:"accessories", emoji:"🔄", price:1100, original:null, badge:null, desc:"3-in-1 retractable: USB-C, Micro-USB, Lightning. Tangle-free automatic retract.", rating:4.6 },
+  { id:15, name:"Portable Projector Mini", category:"electronics", emoji:"🎬", price:12500, original:15000, badge:"hot", desc:"1080p support, HDMI+USB, built-in speaker. Project anything from your phone, anywhere.", rating:4.7 },
+  { id:16, name:"Car Phone Holder", category:"accessories", emoji:"🚗", price:1400, original:null, badge:null, desc:"Dashboard magnetic mount. 360° rotation, universal fit. Strong N52 neodymium magnet.", rating:4.8 },
+  { id:17, name:"Earphone Cable Organizer", category:"accessories", emoji:"🎵", price:450, original:null, badge:null, desc:"Silicone cord manager. Pack of 5. Keep cables tidy on your desk, bag, or car.", rating:4.3 },
+  { id:18, name:"Smart IR Remote Blaster", category:"electronics", emoji:"📺", price:1900, original:null, badge:"new", desc:"Turn your phone into a universal remote. Controls TV, AC, DVD, fan. 360° infrared.", rating:4.5 },
+  { id:19, name:"Premium Phone Stand", category:"accessories", emoji:"🎭", price:1650, original:null, badge:null, desc:"Aluminum alloy foldable stand. Adjustable angle 0–270°. Supports all phones & tablets.", rating:4.7 },
+  { id:20, name:"Solar Power Charger", category:"electronics", emoji:"☀️", price:4200, original:5200, badge:"new", desc:"Dual solar panels, 20,000mAh. Perfect for outdoor Kenya — charge from the sun.", rating:4.6 },
+];
+
+let cart = [];
+let wishlist = new Set();
+let currentProduct = null;
+let checkoutProduct = null;
+let activeFilter = 'all';
+
+// ─── RENDER ──────────────────────────────────────────────────────
+function renderProducts(filter = 'all') {
+  const grid = document.getElementById('productsGrid');
+  const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card reveal" data-id="${p.id}">
+      <div class="product-img">
+        ${p.badge ? `<div class="product-badge badge-${p.badge}">${p.badge.toUpperCase()}</div>` : ''}
+        <button class="product-wishlist ${wishlist.has(p.id)?'active':''}" onclick="toggleWishlist(${p.id},event)">
+          ${wishlist.has(p.id)?'❤️':'🤍'}
+        </button>
+        ${p.emoji}
+      </div>
+      <div class="product-info">
+        <div class="product-category">${p.category === 'accessories' ? 'Phone Accessories' : 'Electronics'}</div>
+        <div class="product-name">${p.name}</div>
+        <p class="product-desc">${p.desc}</p>
+        <div class="product-footer">
+          <div class="product-price">
+            <span class="price-main">KES ${p.price.toLocaleString()}</span>
+            ${p.original ? `<span class="price-original">KES ${p.original.toLocaleString()}</span>` : ''}
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="add-to-cart" onclick="openProduct(${p.id})" title="View Product">👁</button>
+            <button class="add-to-cart" onclick="addToCart(${p.id},event)" title="Add to Cart">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  observeReveal();
+}
+
+function renderBestsellers() {
+  const top = [products[1], products[0], products[8], products[14], products[3]];
+  const feature = top[0];
+  document.getElementById('bsFeature').innerHTML = `
+    <span class="bs-feature-emoji">${feature.emoji}</span>
+    <div class="bs-feature-tag">// #1 Best Seller</div>
+    <div class="bs-feature-name">${feature.name}</div>
+    <p class="bs-feature-desc">${feature.desc}</p>
+    <div class="bs-feature-price">KES ${feature.price.toLocaleString()}</div>
+    <div style="display:flex;gap:0.75rem;">
+      <button class="btn-primary" onclick="openProduct(${feature.id})" style="font-size:0.85rem;padding:0.75rem 1.5rem;">Buy Now</button>
+      <button class="btn-outline" onclick="addToCart(${feature.id},{stopPropagation:()=>{}})" style="font-size:0.85rem;padding:0.75rem 1.5rem;">Add to Cart</button>
+    </div>
+  `;
+  document.getElementById('bsList').innerHTML = top.slice(1).map((p,i) => `
+    <div class="bs-item" onclick="openProduct(${p.id})">
+      <div class="bs-item-num">0${i+2}</div>
+      <div class="bs-item-emoji">${p.emoji}</div>
+      <div class="bs-item-info">
+        <div class="bs-item-name">${p.name}</div>
+        <div class="bs-item-price">KES ${p.price.toLocaleString()}</div>
+      </div>
+      <button class="bs-item-btn" onclick="addToCart(${p.id},event)">+ Cart</button>
+    </div>
+  `).join('');
+}
+
+// ─── FILTER ──────────────────────────────────────────────────────
+function filterProducts(filter, tabEl) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  if(tabEl) tabEl.classList.add('active');
+  renderProducts(filter);
+  document.getElementById('products').scrollIntoView({ behavior:'smooth' });
+}
+
+// ─── PRODUCT MODAL ───────────────────────────────────────────────
+function openProduct(id) {
+  const p = products.find(x => x.id === id);
+  currentProduct = p;
+  document.getElementById('modalImg').textContent = p.emoji;
+  document.getElementById('modalCat').textContent = p.category === 'accessories' ? 'Phone Accessories' : 'Electronics';
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalPrice').textContent = `KES ${p.price.toLocaleString()}`;
+  document.getElementById('modalBuyBtn').onclick = () => { closeModal(); openCheckout(p); };
+  document.getElementById('modalCodBtn').onclick = () => { closeModal(); openCheckout(p, 'cod'); };
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// ─── CART ────────────────────────────────────────────────────────
+function addToCart(id, e) {
+  if(e && e.stopPropagation) e.stopPropagation();
+  const p = products.find(x => x.id === id);
+  const existing = cart.find(c => c.id === id);
+  if(existing) existing.qty++;
+  else cart.push({ ...p, qty: 1 });
+  updateCartCount();
+  showToast(`${p.emoji} ${p.name} added to cart!`);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartCount();
+  renderCheckout();
+}
+
+function updateCartCount() {
+  const total = cart.reduce((s, c) => s + c.qty, 0);
+  document.getElementById('cartCount').textContent = total;
+}
+
+// ─── WISHLIST ────────────────────────────────────────────────────
+function toggleWishlist(id, e) {
+  e.stopPropagation();
+  if(wishlist.has(id)) wishlist.delete(id);
+  else { wishlist.add(id); showToast('💛 Added to wishlist!'); }
+  renderProducts(activeFilter);
+}
+
+// ─── CHECKOUT ────────────────────────────────────────────────────
+let selectedPayment = 'mpesa';
+
+function openCheckout(product, defaultPay) {
+  if(product) {
+    addToCart(product.id, {stopPropagation:()=>{}});
+  }
+  if(defaultPay) selectedPayment = defaultPay;
+  document.getElementById('checkoutOverlay').classList.add('open');
+  document.getElementById('orderSuccess').classList.remove('show');
+  renderCheckout();
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutOverlay').classList.remove('open');
+}
+
+function renderCheckout() {
+  const content = document.getElementById('checkoutContent');
+  const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
+  const shipping = total >= 2000 ? 0 : 300;
+
+  if(cart.length === 0) {
+    content.innerHTML = `
+      <div class="cart-empty">
+        <div style="font-size:3rem;margin-bottom:1rem;">🛒</div>
+        <p>Your cart is empty.</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted)">Browse products and add them here.</p>
+      </div>`;
+    return;
+  }
+
+  content.innerHTML = `
+    <div class="cart-section">
+      <div class="cart-section-title">Cart Items (${cart.length})</div>
+      ${cart.map(c => `
+        <div class="cart-item">
+          <div class="cart-item-emoji">${c.emoji}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${c.name}</div>
+            <div class="cart-item-price">KES ${(c.price * c.qty).toLocaleString()} ${c.qty>1?`× ${c.qty}`:''}</div>
+          </div>
+          <button class="cart-item-remove" onclick="removeFromCart(${c.id})">✕</button>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="form-divider">Customer Details</div>
+
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="custName" placeholder="John Kamau" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone Number</label>
+      <input class="form-input" id="custPhone" placeholder="0712 345 678" type="tel">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Delivery Location</label>
+      <input class="form-input" id="custLocation" placeholder="e.g. Westlands, Nairobi" type="text">
+    </div>
+
+    <div class="form-divider">Payment Method</div>
+
+    <div class="payment-options">
+      <div class="pay-option ${selectedPayment==='mpesa'?'selected':''}" onclick="selectPayment('mpesa')">
+        <div class="pay-radio"><div class="pay-radio-dot"></div></div>
+        <div class="pay-info">
+          <div class="pay-name">📲 M-Pesa STK Push</div>
+          <div class="pay-desc">You'll receive a payment prompt on your phone</div>
+        </div>
+      </div>
+      <div class="pay-option ${selectedPayment==='cod'?'selected':''}" onclick="selectPayment('cod')">
+        <div class="pay-radio"><div class="pay-radio-dot"></div></div>
+        <div class="pay-info">
+          <div class="pay-name">💰 Pay on Delivery</div>
+          <div class="pay-desc">Pay cash when your order arrives</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-summary">
+      <div class="summary-row"><span style="color:var(--text-dim)">Subtotal</span><span>KES ${total.toLocaleString()}</span></div>
+      <div class="summary-row"><span style="color:var(--text-dim)">Delivery</span><span style="color:var(--green)">${shipping === 0 ? 'FREE' : 'KES '+shipping}</span></div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span class="summary-total-price">KES ${(total + shipping).toLocaleString()}</span>
+      </div>
+    </div>
+
+    <button class="btn-place-order" onclick="placeOrder()">
+      ${selectedPayment === 'mpesa' ? '📲 Pay with M-Pesa' : '🚚 Place Order — Pay on Delivery'}
+    </button>
+    <p style="text-align:center;font-size:0.72rem;color:var(--text-muted);margin-top:0.75rem;">🔒 Secure & Encrypted · 7-Day Returns</p>
+  `;
+}
+
+function selectPayment(method) {
+  selectedPayment = method;
+  renderCheckout();
+}
+
+function placeOrder() {
+  const name = document.getElementById('custName')?.value.trim();
+  const phone = document.getElementById('custPhone')?.value.trim();
+  const location = document.getElementById('custLocation')?.value.trim();
+
+  if(!name || !phone || !location) {
+    showToast('⚠️ Please fill in all required fields');
+    return;
+  }
+  if(!/^0[17]\d{8}$/.test(phone.replace(/\s/g,''))) {
+    showToast('⚠️ Please enter a valid Kenyan phone number');
+    return;
+  }
+
+  const msg = selectedPayment === 'mpesa'
+    ? `An M-Pesa STK Push has been sent to ${phone}. Enter your PIN to confirm payment.`
+    : `Order confirmed! We'll call you at ${phone} to arrange delivery to ${location}.`;
+
+  document.getElementById('successMsg').textContent = msg;
+  document.getElementById('checkoutContent').style.display = 'none';
+  document.getElementById('orderSuccess').classList.add('show');
+  cart = [];
+  updateCartCount();
+  setTimeout(() => {
+    document.getElementById('checkoutContent').style.display = '';
+  }, 100);
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  const parts = msg.match(/^(\S+\s)/);
+  document.getElementById('toastText').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── CURSOR ──────────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a,button,.cat-card,.product-card,.bs-item,.pay-option').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); ring.classList.add('hovering'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('hovering'); ring.classList.remove('hovering'); });
+});
+
+// ─── SCROLL EFFECTS ──────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', scrollY > 80);
+});
+
+function observeReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if(e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+}
+
+// ─── MOBILE MENU ─────────────────────────────────────────────────
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ─── CLOSE ON OVERLAY CLICK ──────────────────────────────────────
+document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target === e.currentTarget) closeModal(); });
+document.getElementById('checkoutOverlay').addEventListener('click', e => { if(e.target === e.currentTarget) closeCheckout(); });
+
+// ─── INIT ────────────────────────────────────────────────────────
+renderProducts();
+renderBestsellers();
+observeReveal();
+
+// Hover cursor update after render
+setTimeout(() => {
+  document.querySelectorAll('a,button,.cat-card,.product-card,.bs-item,.pay-option').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); ring.classList.add('hovering'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovering'); ring.classList.remove('hovering'); });
+  });
+}, 300);
+</script>
+</body>
+</html>

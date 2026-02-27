@@ -1,0 +1,1958 @@
+/*
+=================================================================
+  KENYATECH.CO.KE — MAIN STYLESHEET
+  style.css
+=================================================================
+
+  TABLE OF CONTENTS
+  -----------------
+  1.  CSS Variables (Colours, Spacing, Fonts)
+  2.  Reset & Base Styles
+  3.  Custom Cursor
+  4.  Navigation Bar
+  5.  Mobile Menu
+  6.  Hero Section
+  7.  Trust Bar (Marquee)
+  8.  Shared Section Utilities
+  9.  Categories Section
+  10. Products Section
+  11. Product Cards
+  12. Product Modal
+  13. Checkout Panel
+  14. Cart & Order Success
+  15. Forms & Payment Options
+  16. Best Sellers Section
+  17. Why Us / About Section
+  18. Footer
+  19. Toast Notification
+  20. Scroll Reveal Animations
+  21. Keyframe Animations
+  22. Responsive — Tablet (max 1024px)
+  23. Responsive — Mobile (max 768px)
+  24. Responsive — Small Mobile (max 480px)
+
+=================================================================
+*/
+
+
+/* =================================================================
+   1. CSS VARIABLES
+   -----------------------------------------------------------------
+   All colours, border radii, and font names are defined here as
+   CSS custom properties (variables). To change the look of the
+   entire site, edit the values in this :root block only.
+
+   COLOUR GUIDE:
+   --gold        : Primary brand colour. Used on CTAs, prices, accents.
+   --gold-light  : Lighter gold for hover states.
+   --gold-dim    : Darker gold for borders/subtle elements.
+   --black       : Page background (near black).
+   --dark        : Footer background.
+   --dark2       : Section background (slightly lighter than black).
+   --dark3       : Input fields, inner backgrounds.
+   --card        : Product card backgrounds.
+   --border      : Default subtle border colour.
+   --border-gold : Semi-transparent gold border (for cards, badges).
+   --text        : Main body text (warm off-white).
+   --text-dim    : Dimmed secondary text.
+   --text-muted  : Very subtle text (placeholders, small print).
+   --green       : Delivery / success indicator.
+   --red         : Wishlist / error / danger.
+   --white       : Pure white for headings.
+   --r           : Default border radius (8px).
+   --r-lg        : Large border radius (16px, for cards).
+================================================================= */
+:root {
+  /* Brand colours */
+  --gold:        #D4A853;
+  --gold-light:  #F0C872;
+  --gold-dim:    #8A6A2A;
+
+  /* Background layers — slightly lifted for warmth */
+  --black:  #0F0E0C;   /* Warm near-black (was pure #0A0A0A) */
+  --dark:   #161410;   /* Warm dark (footer) */
+  --dark2:  #1E1B16;   /* Section bg — warm charcoal */
+  --dark3:  #272319;   /* Input fields, inner panels */
+  --card:   #1A1712;   /* Product cards — warm dark brown tint */
+
+  /* Borders — slightly more visible */
+  --border:       #3A3428;   /* Warm brown-tinted border */
+  --border-gold:  rgba(212, 168, 83, 0.30);  /* Slightly more visible gold border */
+
+  /* Text — slightly warmer */
+  --text:       #EDE5D5;   /* Warm cream (was cool off-white) */
+  --text-dim:   #9A9080;   /* Warm grey */
+  --text-muted: #605848;   /* Warm muted */
+
+  /* Status colours */
+  --green: #22C55E;
+  --red:   #EF4444;
+  --white: #FFFFFF;
+
+  /* Accent tints used for section backgrounds */
+  --warm-tint:  rgba(212, 168, 83, 0.04);  /* Very subtle gold wash on sections */
+
+  /* Border radius */
+  --r:    8px;
+  --r-lg: 16px;
+}
+
+
+/* =================================================================
+   2. RESET & BASE STYLES
+   -----------------------------------------------------------------
+   Removes default browser margins/padding, sets the font and
+   background across the entire site.
+================================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; /* Smooth scrolling when clicking anchor links */
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  color: var(--text);
+  cursor: none;       /* Hides default cursor on desktop — custom cursor used instead */
+}
+
+
+/* =================================================================
+   3. CUSTOM CURSOR
+   -----------------------------------------------------------------
+   Two layered elements: a small dot that tracks the mouse exactly,
+   and a larger ring that lags behind (smooth animation via JS).
+   On mobile, both are hidden (body cursor:none is also overridden).
+   To DISABLE the custom cursor:
+     - Remove .cursor and .cursor-ring from HTML
+     - Delete this entire section
+     - In script.js delete the CURSOR section
+     - Remove `cursor: none` from body above
+================================================================= */
+
+/* Small gold dot — follows mouse exactly */
+.cursor {
+  width: 12px;
+  height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  /* Use top:0 left:0 and drive position entirely via transform — 
+     this is GPU-accelerated and never clipped by overflow or stacking contexts */
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2147483647; /* Maximum z-index — beats everything */
+  will-change: transform;
+  transition: width 0.15s, height 0.15s, background 0.15s;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.3), 0 0 10px rgba(212,168,83,0.7);
+}
+
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2147483646;
+  will-change: transform;
+  opacity: 0.8;
+  box-shadow: 0 0 8px rgba(212,168,83,0.4);
+}
+
+.cursor.hovering      { width: 20px; height: 20px; background: var(--gold-light); }
+.cursor-ring.hovering { width: 52px; height: 52px; opacity: 0.4; }
+
+
+/* =================================================================
+   4. NAVIGATION BAR
+   -----------------------------------------------------------------
+   Fixed at the top. Uses backdrop-filter blur for glass effect.
+   Shrinks in height when the page is scrolled (`.scrolled` class
+   added via JS).
+   To change nav height, edit `height` on `nav` and `nav.scrolled`.
+================================================================= */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  height: 72px;
+  background: rgba(15, 13, 10, 0.94);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s;
+}
+
+/* Scrolled state — slightly shorter, gold border */
+nav.scrolled {
+  height: 60px;
+  border-bottom-color: var(--border-gold);
+}
+
+/* Logo */
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--gold); } /* "Tech" part in gold */
+
+/* Desktop nav links */
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  position: relative;
+}
+/* Animated underline on hover */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+/* Right-side action area */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Cart button */
+.cart-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  padding: 0.55rem 1.2rem;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  cursor: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.cart-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* Cart item count badge (circular) */
+.cart-count {
+  background: var(--black);
+  color: var(--gold);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* Hamburger / menu button — hidden on desktop, shown on mobile */
+.menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r);
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  font-size: 1.2rem;
+}
+
+
+/* =================================================================
+   5. MOBILE MENU
+   -----------------------------------------------------------------
+   Full-screen slide-in overlay for mobile navigation.
+   Activated by adding .open class via JS when hamburger is clicked.
+================================================================= */
+.mobile-menu {
+  display: none; /* Shown only on mobile via media query below */
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 900;
+  flex-direction: column;
+  padding: 100px 5% 3rem;
+  gap: 1.5rem;
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+.mobile-menu.open { transform: translateX(0); }
+
+/* Large serif links inside mobile menu */
+.mobile-menu a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 300;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--gold); }
+
+
+/* =================================================================
+   6. HERO SECTION
+   -----------------------------------------------------------------
+   Full-screen landing area. Content sits at the bottom-left.
+   Background is CSS-only (no images required).
+   To change the gradient colours, find --gold in the radial-gradients
+   inside .hero-bg and replace the rgba values.
+================================================================= */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 5% 8%;
+  position: relative;
+  overflow: hidden;
+  background: var(--black);
+}
+
+/* Decorative radial gradient glow in background */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 30%, rgba(212,168,83,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(212,168,83,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 50% 100%, rgba(180,120,40,0.06) 0%, transparent 50%),
+    linear-gradient(160deg, #14110C 0%, #0F0E0C 100%);
+}
+
+/* Decorative grid lines over the gradient */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212,168,83,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,83,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.6;
+}
+
+/* Text content block */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+/* Small blinking badge above headline */
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-gold);
+  padding: 0.4rem 1rem;
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.8s ease 0.2s both;
+}
+/* Pulsing dot before tag text */
+.hero-tag::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+/* Main heading */
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.2rem, 7vw, 6.5rem); /* Fluid: scales with screen width */
+  font-weight: 300;
+  line-height: 0.95;
+  color: var(--white);
+  margin-bottom: 2rem;
+  animation: fadeUp 0.8s ease 0.4s both;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+  display: block;
+}
+
+/* Sub-headline */
+.hero-sub {
+  font-size: 1rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 3rem;
+  animation: fadeUp 0.8s ease 0.6s both;
+}
+
+/* CTA button row */
+.hero-ctas {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s ease 0.8s both;
+}
+
+/* Stats block — bottom-right of hero, desktop only */
+.hero-stats {
+  position: absolute;
+  right: 5%;
+  bottom: 8%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  z-index: 2;
+  animation: fadeLeft 0.8s ease 1s both;
+}
+.stat-item { text-align: right; }
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Scroll indicator — animated line drops down */
+.hero-scroll {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-dim);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  z-index: 2;
+  animation: fadeIn 1s ease 1.5s both;
+}
+.scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(var(--gold), transparent);
+  animation: scrollDrop 2s ease-in-out infinite;
+}
+
+
+/* =================================================================
+   7. TRUST BAR
+   -----------------------------------------------------------------
+   Horizontally scrolling marquee strip between Hero and Categories.
+   Items are duplicated in HTML to create a seamless infinite loop.
+   To change scroll speed: adjust the `30s` duration in @keyframes
+   marquee below.
+================================================================= */
+.trust-bar {
+  background: var(--dark2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 5%;
+  overflow: hidden;
+}
+
+/* Animated scrolling track */
+.trust-track {
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+  animation: marquee 30s linear infinite; /* Change 30s to speed up/slow down */
+  white-space: nowrap;
+}
+
+/* Individual trust item */
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+.trust-item svg { color: var(--gold); flex-shrink: 0; }
+
+
+/* =================================================================
+   8. SHARED SECTION UTILITIES
+   -----------------------------------------------------------------
+   Reusable styles for section labels, titles, and layout.
+   Used across multiple sections.
+================================================================= */
+
+/* All main sections share this padding */
+section {
+  padding: 7rem 5%;
+}
+
+/* Small uppercase label above section titles (e.g. "— Our Collections") */
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* Large serif section heading */
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.1;
+}
+.section-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* Shared CTA buttons */
+
+/* Gold filled button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--gold);
+  color: var(--black);
+  padding: 0.9rem 2.2rem;
+  border: none;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: none;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(212,168,83,0.3);
+}
+
+/* Outlined/ghost button */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  color: var(--text);
+  padding: 0.9rem 2.2rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: none;
+  transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  text-decoration: none;
+}
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
+
+/* =================================================================
+   9. CATEGORIES SECTION
+   -----------------------------------------------------------------
+   Two-column grid of category cards that link to filtered products.
+================================================================= */
+.categories { background: linear-gradient(160deg, var(--dark2) 0%, var(--black) 100%); }
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+
+/* Category card */
+.cat-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 3rem 2.5rem;
+  overflow: hidden;
+  cursor: none;
+  transition: border-color 0.3s, transform 0.3s;
+  text-decoration: none;
+  display: block;
+}
+/* Gold glow overlay on hover */
+.cat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 80% 20%, rgba(212,168,83,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cat-card:hover { border-color: var(--gold-dim); transform: translateY(-4px); }
+.cat-card:hover::before { opacity: 1; }
+
+/* Large emoji icon */
+.cat-icon { font-size: 3rem; margin-bottom: 1.5rem; display: block; }
+
+/* Category title */
+.cat-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+/* Category description */
+.cat-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* Product count label */
+.cat-count {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+/* Arrow icon — rotates on hover */
+.cat-arrow {
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  transition: border-color 0.3s, color 0.3s, transform 0.3s;
+}
+.cat-card:hover .cat-arrow {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: rotate(45deg);
+}
+
+
+/* =================================================================
+   10. PRODUCTS SECTION
+   -----------------------------------------------------------------
+   Contains the filter tabs and responsive product grid.
+================================================================= */
+.products-section { background: var(--dark2); border-top: 1px solid var(--border); }
+
+/* Row containing the title on the left and filter tabs on the right */
+.products-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 3.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Filter tab container */
+.filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--dark3);
+  padding: 0.3rem;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+}
+
+/* Individual filter tab button */
+.filter-tab {
+  padding: 0.55rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+/* Active / selected tab */
+.filter-tab.active {
+  background: var(--gold);
+  color: var(--black);
+  font-weight: 600;
+}
+.filter-tab:hover:not(.active) { color: var(--text); }
+
+/* Product card grid — auto-fills columns */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+
+/* =================================================================
+   11. PRODUCT CARDS
+   -----------------------------------------------------------------
+   Each product is rendered as a card by renderProducts() in script.js.
+================================================================= */
+.product-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  cursor: none;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+}
+.product-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* Product image / emoji area */
+.product-img {
+  aspect-ratio: 1;
+  background: var(--dark3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+/* Subtle gold radial glow over image */
+.product-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(212,168,83,0.06), transparent);
+}
+
+/* Badge labels (NEW, HOT, SALE) — top-left of image */
+.product-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+.badge-new  { background: var(--gold);  color: var(--black); }
+.badge-hot  { background: #EF4444;      color: white; }
+.badge-sale { background: var(--green); color: white; }
+
+/* Wishlist heart button — top-right of image */
+.product-wishlist {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  background: rgba(10,10,10,0.7);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  z-index: 2;
+  color: var(--text-dim);
+}
+.product-wishlist:hover,
+.product-wishlist.active { color: #EF4444; border-color: #EF4444; }
+
+/* Text area below image */
+.product-info { padding: 1.5rem; }
+
+/* Category label */
+.product-category {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+/* Product name */
+.product-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+/* Short description */
+.product-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+}
+
+/* Price + Add to Cart row */
+.product-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.product-price { display: flex; flex-direction: column; }
+
+/* Current price */
+.price-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+}
+
+/* Original price (crossed out) */
+.price-original {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* Small square action button (view / add to cart) */
+.add-to-cart {
+  width: 44px;
+  height: 44px;
+  background: var(--gold);
+  border: none;
+  border-radius: var(--r);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  transition: background 0.2s, transform 0.15s;
+  font-size: 1.1rem;
+}
+.add-to-cart:hover { background: var(--gold-light); transform: scale(1.08); }
+
+
+/* =================================================================
+   12. PRODUCT MODAL
+   -----------------------------------------------------------------
+   Full-screen overlay with product details. Opens when a product
+   is clicked. Closes by clicking ✕ or clicking outside the modal.
+================================================================= */
+
+/* Dark blurred overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+/* Modal dialog box */
+.modal {
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(20px);
+  transition: transform 0.3s;
+  position: relative;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  color: var(--text-dim);
+  font-size: 1.2rem;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.modal-close:hover { color: var(--white); border-color: var(--gold); }
+
+/* Two-column layout: image | details */
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; }
+
+/* Left column — product image/emoji */
+.modal-img {
+  aspect-ratio: 1;
+  background: var(--dark3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8rem;
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+}
+
+/* Right column — product details */
+.modal-body { padding: 3rem; }
+
+.modal-cat {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.modal-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+.modal-desc {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.modal-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+/* Green delivery info line */
+.modal-delivery {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--green);
+  margin-bottom: 2rem;
+}
+
+/* Payment method badges row */
+.modal-payment {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.pay-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+/* Modal action buttons */
+.modal-ctas { display: flex; flex-direction: column; gap: 0.75rem; }
+
+/* Primary gold button — M-Pesa */
+.btn-buy-now {
+  width: 100%;
+  padding: 1rem;
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  border-radius: var(--r);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: none;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.btn-buy-now:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+/* Secondary outline button — Pay on Delivery */
+.btn-cod {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: none;
+  transition: all 0.2s;
+}
+.btn-cod:hover { border-color: var(--gold); color: var(--gold); }
+
+
+/* =================================================================
+   13. CHECKOUT PANEL
+   -----------------------------------------------------------------
+   Slide-in panel from the right side of the screen.
+   Contains the cart, customer form, payment selector, and order summary.
+================================================================= */
+
+/* Full-screen overlay behind the panel */
+.checkout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  z-index: 3000;
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.checkout-overlay.open { opacity: 1; pointer-events: all; }
+
+/* The panel itself */
+.checkout-panel {
+  background: var(--dark2);
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.checkout-overlay.open .checkout-panel { transform: translateX(0); }
+
+/* Panel header row */
+.checkout-header {
+  padding: 2rem 2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.checkout-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--white);
+}
+
+/* Close × button */
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.3rem;
+  cursor: none;
+  transition: color 0.2s;
+}
+.close-btn:hover { color: var(--white); }
+
+/* Scrollable content area */
+.checkout-content { padding: 2rem; flex: 1; }
+
+
+/* =================================================================
+   14. CART ITEMS & ORDER SUCCESS
+================================================================= */
+
+/* Section heading inside cart */
+.cart-section { margin-bottom: 2rem; }
+.cart-section-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* Individual cart row */
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.cart-item-emoji { font-size: 2rem; }
+.cart-item-info  { flex: 1; }
+.cart-item-name  { font-size: 0.88rem; color: var(--text); font-weight: 500; }
+.cart-item-price { font-size: 0.85rem; color: var(--gold); margin-top: 0.2rem; }
+.cart-item-remove {
+  color: var(--text-muted);
+  cursor: none;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  transition: color 0.2s;
+}
+.cart-item-remove:hover { color: var(--red); }
+
+/* Shown when cart is empty */
+.cart-empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* Order success screen (shown after checkout) */
+.order-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  flex: 1;
+}
+.order-success.show { display: flex; }
+.success-icon  { font-size: 4rem; margin-bottom: 1.5rem; }
+.success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+}
+.success-msg { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; max-width: 300px; }
+
+
+/* =================================================================
+   15. FORMS & PAYMENT OPTIONS
+   -----------------------------------------------------------------
+   Used inside the checkout panel.
+================================================================= */
+
+/* Divider with centred label text */
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Form field group */
+.form-group { margin-bottom: 1.2rem; }
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.9rem 1rem;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-input:focus       { border-color: var(--gold); }
+.form-input::placeholder { color: var(--text-muted); }
+
+/* Payment option cards */
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.pay-option {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.2rem;
+  cursor: none;
+  transition: border-color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.pay-option:hover   { border-color: var(--gold-dim); }
+.pay-option.selected {
+  border-color: var(--gold);
+  background: rgba(212,168,83,0.06);
+}
+
+/* Custom radio circle */
+.pay-radio {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+.pay-option.selected .pay-radio { border-color: var(--gold); }
+
+/* Inner gold dot — scales in when selected */
+.pay-radio-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s;
+}
+.pay-option.selected .pay-radio-dot { opacity: 1; transform: scale(1); }
+
+.pay-info { flex: 1; }
+.pay-name { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+.pay-desc { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.15rem; }
+
+/* Order summary box */
+.order-summary {
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  font-size: 0.85rem;
+}
+.summary-row.total {
+  border-top: 1px solid var(--border);
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  font-weight: 600;
+  color: var(--white);
+}
+.summary-total-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+}
+
+/* Place order button */
+.btn-place-order {
+  width: 100%;
+  padding: 1.1rem;
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  border-radius: var(--r);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: none;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+.btn-place-order:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(212,168,83,0.25);
+}
+
+
+/* =================================================================
+   16. BEST SELLERS SECTION
+   -----------------------------------------------------------------
+   Split into a large feature card (left) and a ranked list (right).
+================================================================= */
+.bestsellers { background: linear-gradient(180deg, var(--black) 0%, var(--dark2) 100%); }
+
+.bs-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+
+/* Large featured product card */
+.bs-feature {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+/* Decorative glow in corner */
+.bs-feature::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,168,83,0.08), transparent);
+}
+.bs-feature-emoji  { font-size: 5rem; margin-bottom: 1.5rem; display: block; }
+.bs-feature-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.bs-feature-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+}
+.bs-feature-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+.bs-feature-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+/* Ranked list of other bestsellers */
+.bs-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.bs-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  cursor: none;
+  transition: border-color 0.3s;
+}
+.bs-item:hover { border-color: var(--border-gold); }
+
+.bs-item-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold-dim);
+  width: 24px;
+  flex-shrink: 0;
+}
+.bs-item-emoji { font-size: 2rem; flex-shrink: 0; }
+.bs-item-info  { flex: 1; }
+.bs-item-name  { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+.bs-item-price { font-size: 0.85rem; color: var(--gold); margin-top: 0.2rem; }
+
+.bs-item-btn {
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  cursor: none;
+  transition: all 0.2s;
+}
+.bs-item-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+
+/* =================================================================
+   17. WHY US / ABOUT SECTION
+================================================================= */
+.why-section { background: var(--dark2); border-top: 1px solid var(--border); }
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+
+.why-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.why-card:hover { border-color: var(--border-gold); transform: translateY(-4px); }
+
+.why-icon  { font-size: 2.5rem; margin-bottom: 1.2rem; display: block; }
+.why-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--white); margin-bottom: 0.5rem; }
+.why-desc  { font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; }
+
+
+/* =================================================================
+   18. FOOTER
+================================================================= */
+footer {
+  background: var(--dark);
+  border-top: 1px solid var(--border);
+  padding: 4rem 5% 2rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-brand .nav-logo { display: block; margin-bottom: 1rem; text-decoration: none; }
+.footer-brand-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; max-width: 260px; }
+
+.footer-col-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-links a { font-size: 0.82rem; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--gold); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-copy { font-size: 0.78rem; color: var(--text-muted); }
+
+.mpesa-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--green);
+  border: 1px solid rgba(34,197,94,0.25);
+  padding: 0.35rem 0.8rem;
+  border-radius: 4px;
+}
+
+
+/* =================================================================
+   19. TOAST NOTIFICATION
+   -----------------------------------------------------------------
+   Slides up from bottom-right. Shown briefly when items are added
+   to cart or wishlist. Controlled by showToast() in script.js.
+================================================================= */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--dark2);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--r);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 9999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 300px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { font-size: 1.2rem; }
+.toast-text { font-size: 0.85rem; color: var(--text); }
+
+
+/* =================================================================
+   20. SCROLL REVEAL
+   -----------------------------------------------------------------
+   Elements with class="reveal" start invisible and slide up into
+   view when they enter the viewport. JS adds "visible" class via
+   IntersectionObserver. See observeReveal() in script.js.
+================================================================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* =================================================================
+   21. KEYFRAME ANIMATIONS
+================================================================= */
+
+/* Used on hero elements to stagger fade-up on page load */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Used on hero stats (slide in from right) */
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Used on scroll indicator */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Pulsing dot in hero tag */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* Scroll line animation */
+@keyframes scrollDrop {
+  0%   { transform: scaleY(0); transform-origin: top;    opacity: 0; }
+  50%  { transform: scaleY(1); transform-origin: top;    opacity: 1; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+}
+
+/* Trust bar scrolling */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* -50% because items are duplicated */
+}
+
+
+
+
+/* =================================================================
+   SOLD OUT STATES
+   -----------------------------------------------------------------
+   Applied to product cards when soldOut: true in script.js.
+
+   To change the overlay opacity: edit the rgba alpha value (0.55).
+   To change the greyscale amount: edit grayscale() percentage.
+   To change the badge colour: edit .badge-soldout background.
+================================================================= */
+
+/* Greyed-out card — image desaturated, card dimmed */
+.product-card.sold-out {
+  opacity: 0.75;
+}
+
+/* Desaturate the image area only */
+.product-card.sold-out .product-img {
+  filter: grayscale(70%);
+  position: relative;
+}
+
+/* Dark diagonal overlay across the image */
+.product-card.sold-out .product-img::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.45);
+  z-index: 1;
+  border-radius: 0; /* inherits from parent */
+}
+
+/* Ensure badge sits above the overlay */
+.product-card.sold-out .product-badge {
+  z-index: 3;
+}
+
+/* Sold out badge — gold and bright so it stands out */
+.badge-soldout {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  box-shadow: 0 2px 12px rgba(212,168,83,0.4);
+}
+
+/* Muted product name when sold out */
+.product-card.sold-out .product-name {
+  color: var(--text-dim);
+}
+
+/* Remove hover lift effect on sold-out cards */
+.product-card.sold-out:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+/* =================================================================
+   22. RESPONSIVE — TABLET (max-width: 1024px)
+================================================================= */
+
+
+
+/* =================================================================
+   22. RESPONSIVE — TABLET (max-width: 1024px)
+================================================================= */
+@media (max-width: 1024px) {
+  .why-grid    { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .bs-grid     { grid-template-columns: 1fr; }
+}
+
+
+/* =================================================================
+   23. RESPONSIVE — MOBILE (max-width: 768px)
+================================================================= */
+@media (max-width: 768px) {
+  /* ── Cursor: off on touch ── */
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+
+  /* ── Nav ── */
+  nav { padding: 0 4%; }
+  .nav-links { display: none; }
+  .menu-btn  { display: flex; }
+  .mobile-menu { display: flex; }
+
+  /* ── Sections: tighter padding ── */
+  section { padding: 4rem 4%; }
+
+  /* ── Hero ── */
+  .hero       { padding: 0 4% 5%; min-height: 100svh; }
+  .hero h1    { font-size: clamp(2.4rem, 10vw, 4rem); }
+  .hero-sub   { font-size: 0.92rem; }
+  .hero-stats { display: none; }
+  .hero-tag   { font-size: 0.62rem; }
+
+  /* ── Section headings ── */
+  .section-title { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+
+  /* ── Categories ── */
+  .cat-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .cat-card { padding: 2rem 1.5rem; }
+
+  /* ── Products ── */
+  .products-section { padding: 4rem 4%; }
+  .products-header  { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .filter-tabs      { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.25rem; }
+  .filter-tab       { white-space: nowrap; flex-shrink: 0; font-size: 0.78rem; padding: 0.5rem 1rem; }
+  .products-grid    { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .product-img      { height: 160px; font-size: 4rem; }
+  .product-name     { font-size: 0.85rem; }
+  .product-desc     { display: none; } /* Hide desc on small cards */
+  .product-info     { padding: 0.85rem; }
+  .price-main       { font-size: 1.1rem; }
+
+  /* ── Best Sellers ── */
+  .bs-grid         { grid-template-columns: 1fr; }
+  .bs-feature      { padding: 2rem; }
+  .bs-feature-name { font-size: 1.4rem; }
+  .bs-feature-emoji { font-size: 5rem; }
+
+  /* ── Why section ── */
+  .why-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .why-card { padding: 1.5rem 1rem; }
+  .why-icon { font-size: 1.5rem; }
+  .why-title { font-size: 0.9rem; }
+  .why-desc  { font-size: 0.78rem; }
+
+  /* ── Modal: full screen on mobile ── */
+  .modal-overlay { align-items: flex-end; }
+  .modal {
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    max-height: 92svh;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+  .modal-grid       { grid-template-columns: 1fr; }
+  .modal-img        { height: 220px; font-size: 5rem; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  .modal-body       { padding: 1.5rem; }
+  .modal-name       { font-size: 1.3rem; }
+  .modal-price      { font-size: 1.6rem; }
+  .modal-ctas       { flex-direction: column; }
+  .btn-buy-now,
+  .btn-cod          { width: 100%; font-size: 0.88rem; padding: 0.9rem; }
+
+  /* ── Checkout panel: full screen on mobile ── */
+  .checkout-panel {
+    width: 100%;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    max-height: 92svh;
+  }
+  .checkout-overlay { align-items: flex-end; }
+
+  /* ── Trust bar ── */
+  .trust-bar { font-size: 0.75rem; }
+
+  /* ── Footer ── */
+  .footer-grid  { grid-template-columns: 1fr; gap: 1.5rem; }
+  .footer-brand { padding-right: 0; }
+  .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+
+  /* ── Support bar ── */
+  .support-inner   { flex-direction: column; align-items: flex-start; }
+  .support-actions { width: 100%; }
+  .support-btn     { flex: 1; justify-content: center; font-size: 0.82rem; padding: 0.85rem 1rem; }
+}
+
+
+/* =================================================================
+   24. RESPONSIVE — SMALL MOBILE (max-width: 480px)
+================================================================= */
+@media (max-width: 480px) {
+  /* ── Single column products ── */
+  .products-grid { grid-template-columns: 1fr; }
+  .product-img   { height: 200px; font-size: 5rem; }
+  .product-desc  { display: block; font-size: 0.78rem; }
+
+  /* ── Why: single column ── */
+  .why-grid { grid-template-columns: 1fr; }
+
+  /* ── Hero CTAs full width ── */
+  .hero-ctas { flex-direction: column; }
+  .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+
+  /* ── Section padding ── */
+  section { padding: 3.5rem 4%; }
+
+  /* ── Filter tabs scrollable ── */
+  .filter-tabs { gap: 0.4rem; }
+  .filter-tab  { padding: 0.45rem 0.85rem; font-size: 0.72rem; }
+
+  /* ── Share buttons: 2 per row ── */
+  .share-btn { flex: 1; min-width: 40%; justify-content: center; }
+
+  /* ── Checkout full width ── */
+  .checkout-panel { border-radius: 0; max-height: 100svh; }
+}
+
+
+/* =================================================================
+   SHARE BUTTONS (inside product modal)
+================================================================= */
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.share-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-1px);
+}
+
+/* =================================================================
+   CUSTOMER SUPPORT BAR
+   Strip above the footer with call + WhatsApp CTAs.
+================================================================= */
+.support-bar {
+  background: var(--dark2);
+  border-top: 1px solid var(--border-gold);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 5%;
+}
+.support-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.support-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.support-icon { font-size: 2rem; }
+.support-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--white);
+}
+.support-sub {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+}
+.support-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.support-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--r);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.support-btn-call {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+}
+.support-btn-call:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212,168,83,0.3);
+}
+.support-btn-whatsapp {
+  background: transparent;
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.support-btn-whatsapp:hover {
+  background: rgba(34,197,94,0.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .support-inner { flex-direction: column; align-items: flex-start; }
+  .support-actions { width: 100%; }
+  .support-btn { flex: 1; justify-content: center; }
+}
